@@ -1,111 +1,276 @@
 # PDF to Markdown Converter
 
-A simple, cross-platform desktop application to convert PDF files into AI-ready Markdown, including text from images using Optical Character Recognition (OCR).
+A versatile Python application that converts PDF files into clean, AI-ready Markdown format. Features both graphical and command-line interfaces, with optional OCR support for extracting text from images.
 
-## Features
+## 🌟 Features
 
-*   **PDF to Markdown:** Converts the text content of a PDF file into clean Markdown.
-*   **OCR for Images:** Extracts text from images within the PDF using Tesseract-OCR.
-*   **Simple GUI:** An intuitive graphical user interface built with `customtkinter`.
-*   **Cross-Platform:** Works on Linux and Windows.
+- **Dual Interface**: Both GUI and command-line versions for different use cases
+- **Smart Text Extraction**: Preserves document structure using HTML-to-Markdown conversion
+- **OCR Support**: Optional text extraction from images using Tesseract-OCR
+- **Cross-Platform**: Works on Linux, macOS, and Windows
+- **Headless Operation**: CLI version works in server/container environments
+- **Comprehensive Testing**: Built-in test suite for functionality verification
+- **Automated Setup**: One-command installation and dependency management
 
-## Requirements
+## 📋 Requirements
 
-Before you begin, ensure you have met the following requirements:
+### Minimum Requirements
+- **Python 3.6+** (tested with Python 3.10)
+- **pip** package manager
 
-*   **Python 3:** You have a recent version of Python 3 installed.
-*   **Tesseract-OCR:** You have Tesseract-OCR installed on your system.
+### Optional Dependencies
+- **Tesseract-OCR** (for image text extraction)
+- **Display server** (for GUI version only)
 
-### Tesseract Installation
+### Python Dependencies
+All Python dependencies are automatically installed by the setup script:
+- `customtkinter` - Modern GUI framework
+- `PyMuPDF` - PDF processing library
+- `markdownify` - HTML to Markdown conversion
+- `pytesseract` - Tesseract OCR wrapper
+- `Pillow` - Image processing
 
-Tesseract is an open-source OCR engine. You must install it for the image-to-text functionality to work.
-
-*   **On Fedora/CentOS/RHEL:**
-    ```bash
-    sudo dnf install tesseract
-    ```
-*   **On Debian/Ubuntu:**
-    ```bash
-    sudo apt install tesseract-ocr
-    ```
-*   **On Windows:**
-    Download and run the installer from the [Tesseract at UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki) page. Make sure to add the Tesseract installation directory to your system's `PATH`.
-
-## Installation
+## 🚀 Installation
 
 ### Quick Setup (Recommended)
 
-Run the setup script to automatically install dependencies and verify everything works:
-
 ```bash
+# Clone the repository
+git clone https://github.com/shinose/pdf2md.git
+cd pdf2md
+
+# Run automated setup
 ./setup.sh
 ```
 
+The setup script will:
+- Check Python version compatibility
+- Install all required Python packages
+- Verify Tesseract availability
+- Test all components
+- Report any issues
+
 ### Manual Installation
 
-1.  **Clone the repository (or download the files):**
-    ```bash
-    # If you are using git
-    git clone <repository_url>
-    cd pdf2md
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/shinose/pdf2md.git
+   cd pdf2md
+   ```
 
-2.  **Install Python dependencies:**
-    The required Python libraries are listed in `requirements.txt`. Install them using `pip`:
-    ```bash
-    python3 -m pip install -r requirements.txt
-    ```
+2. **Install Python dependencies:**
+   ```bash
+   python3 -m pip install -r requirements.txt
+   ```
 
-3.  **Install Tesseract-OCR (Optional but recommended):**
-    See the Tesseract installation section below.
+3. **Install Tesseract-OCR (Optional):**
+   ```bash
+   # Ubuntu/Debian
+   sudo apt install tesseract-ocr
+   
+   # Fedora/CentOS/RHEL
+   sudo dnf install tesseract
+   
+   # macOS
+   brew install tesseract
+   
+   # Windows
+   # Download from: https://github.com/UB-Mannheim/tesseract/wiki
+   ```
 
-## Usage
+## 📖 Usage
 
 ### GUI Application
 
-To run the graphical user interface:
+Launch the graphical interface for interactive use:
 
 ```bash
 python3 pdf2md.py
 ```
 
-This will launch the "PDF to Markdown Converter" window.
-
-1.  Click **"Select PDF"** to choose a PDF file.
-2.  Click **"Convert to Markdown"**. The application will process the PDF, including running OCR on any images.
-3.  The generated Markdown will appear in the text box.
-4.  Click **"Save Markdown"** to save the result to a `.md` file.
+**GUI Workflow:**
+1. Click **"Select PDF"** to choose a PDF file
+2. Click **"Convert to Markdown"** to process the document
+3. Review the generated Markdown in the text area
+4. Click **"Save Markdown"** to export the result
 
 ### Command-Line Interface
 
-For headless environments or automation:
+Perfect for automation, batch processing, or headless environments:
 
 ```bash
-python3 pdf2md_cli.py <pdf_file> [-o output.md]
+python3 pdf2md_cli.py <input_pdf> [-o output_file]
 ```
 
-**Examples:**
+**CLI Examples:**
 ```bash
-# Convert and display output in terminal
+# Convert and display in terminal
 python3 pdf2md_cli.py document.pdf
 
 # Convert and save to file
 python3 pdf2md_cli.py document.pdf -o document.md
 
+# Batch conversion (shell script)
+for file in *.pdf; do
+    python3 pdf2md_cli.py "$file" -o "${file%.pdf}.md"
+done
+
 # Convert with custom output path
 python3 pdf2md_cli.py "/path/to/document.pdf" -o "/path/to/output.md"
 ```
 
-### Testing
+**CLI Options:**
+- `pdf_file` (required): Path to input PDF file
+- `-o, --output` (optional): Output Markdown file path
+- `-h, --help`: Show help message
 
-A test script is included to verify functionality:
+### Testing and Verification
+
+Run the comprehensive test suite:
 
 ```bash
 python3 test_converter.py
 ```
 
-This will test all components and report any issues.
+This tests:
+- Module imports
+- PDF processing capabilities
+- HTML-to-Markdown conversion
+- GUI creation (in environments with display)
+- Tesseract integration
 
-## License
+### Creating Test Documents
+
+Generate test PDFs for development or testing:
+
+```bash
+python3 create_test_pdf.py
+```
+
+Creates `test_document.pdf` with sample content for testing conversions.
+
+## 🔧 Technical Details
+
+### PDF Processing Pipeline
+
+1. **Text Extraction**: Uses PyMuPDF to extract text as HTML (preserves structure)
+2. **Image Processing**: Extracts embedded images and optionally applies OCR
+3. **Markdown Conversion**: Converts HTML content to clean Markdown
+4. **Output**: Displays or saves the final Markdown
+
+### OCR Integration
+
+- **Automatic Detection**: Checks for Tesseract availability
+- **Graceful Degradation**: Works without OCR (images are skipped)
+- **Error Handling**: Continues processing if individual images fail
+- **Text Formatting**: OCR output is wrapped in `<pre>` tags for readability
+
+### Error Handling
+
+- **Missing Dependencies**: Clear error messages with installation instructions
+- **Invalid Files**: Proper validation and user feedback
+- **Processing Errors**: Graceful failure with detailed error information
+- **OCR Failures**: Continues processing if individual images can't be processed
+
+## 📁 Project Structure
+
+```
+pdf2md/
+├── pdf2md.py              # GUI application
+├── pdf2md_cli.py          # Command-line interface
+├── setup.sh               # Automated setup script
+├── test_converter.py      # Test suite
+├── create_test_pdf.py     # Test document generator
+├── requirements.txt       # Python dependencies
+├── README.md             # This documentation
+└── LICENSE               # MIT License
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**GUI doesn't start:**
+```bash
+# Check if display is available
+echo $DISPLAY
+
+# Use CLI version instead
+python3 pdf2md_cli.py document.pdf
+```
+
+**Tesseract not found:**
+```bash
+# Check if installed
+which tesseract
+
+# Install on Ubuntu/Debian
+sudo apt install tesseract-ocr
+```
+
+**Module import errors:**
+```bash
+# Reinstall dependencies
+python3 -m pip install -r requirements.txt --force-reinstall
+```
+
+**Permission errors:**
+```bash
+# Use user installation
+python3 -m pip install --user -r requirements.txt
+```
+
+### Getting Help
+
+1. Run the test suite: `python3 test_converter.py`
+2. Check the setup script output: `./setup.sh`
+3. Verify all dependencies are installed
+4. Ensure PDF files are not password-protected
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
+
+### Development Setup
+
+```bash
+# Clone your fork
+git clone https://github.com/yourusername/pdf2md.git
+cd pdf2md
+
+# Install dependencies
+./setup.sh
+
+# Run tests
+python3 test_converter.py
+
+# Create test PDFs
+python3 create_test_pdf.py
+```
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **PyMuPDF** - PDF processing library
+- **CustomTkinter** - Modern GUI framework
+- **Tesseract** - OCR engine
+- **Markdownify** - HTML to Markdown conversion
+
+## 📊 Version History
+
+- **v1.0** - Initial release with GUI interface
+- **v1.1** - Added CLI interface, setup script, and testing utilities
+- **v1.2** - Enhanced documentation and error handling
+
+---
+
+**Made with ❤️ for the PDF-to-Markdown conversion community**
