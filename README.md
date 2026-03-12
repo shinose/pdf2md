@@ -98,31 +98,43 @@ python3 pdf2md.py
 
 Perfect for automation, batch processing, or headless environments:
 
+**Standard CLI:**
 ```bash
 python3 pdf2md_cli.py <input_pdf> [-o output_file]
 ```
 
+**Enhanced CLI (Recommended):**
+```bash
+python3 pdf2md_cli_enhanced.py <input_pdf> [options]
+```
+
+**Enhanced CLI Options:**
+- `--no-ocr`: Disable OCR processing
+- `--no-embed`: Don't embed images as base64
+- `-o, --output`: Output Markdown file path
+
 **CLI Examples:**
 ```bash
-# Convert and display in terminal
-python3 pdf2md_cli.py document.pdf
+# Basic conversion with default settings
+python3 pdf2md_cli_enhanced.py document.pdf
 
 # Convert and save to file
-python3 pdf2md_cli.py document.pdf -o document.md
+python3 pdf2md_cli_enhanced.py document.pdf -o document.md
+
+# Disable OCR for faster processing
+python3 pdf2md_cli_enhanced.py document.pdf --no-ocr
+
+# Don't embed images (smaller file size)
+python3 pdf2md_cli_enhanced.py document.pdf --no-embed -o document.md
+
+# Full processing with all features
+python3 pdf2md_cli_enhanced.py document.pdf -o full_output.md
 
 # Batch conversion (shell script)
 for file in *.pdf; do
-    python3 pdf2md_cli.py "$file" -o "${file%.pdf}.md"
+    python3 pdf2md_cli_enhanced.py "$file" -o "${file%.pdf}_enhanced.md"
 done
-
-# Convert with custom output path
-python3 pdf2md_cli.py "/path/to/document.pdf" -o "/path/to/output.md"
 ```
-
-**CLI Options:**
-- `pdf_file` (required): Path to input PDF file
-- `-o, --output` (optional): Output Markdown file path
-- `-h, --help`: Show help message
 
 ### Testing and Verification
 
@@ -176,13 +188,18 @@ Creates `test_document.pdf` with sample content for testing conversions.
 
 ```
 pdf2md/
-├── pdf2md.py              # GUI application
-├── pdf2md_cli.py          # Command-line interface
+├── pdf2md.py              # Original GUI application
+├── pdf2md_enhanced.py     # Enhanced GUI with better OCR and options
+├── pdf2md_cli.py          # Standard command-line interface
+├── pdf2md_cli_enhanced.py # Enhanced CLI with advanced features
 ├── setup.sh               # Automated setup script
+├── install_tesseract.sh   # Tesseract installation helper
 ├── test_converter.py      # Test suite
 ├── create_test_pdf.py     # Test document generator
 ├── requirements.txt       # Python dependencies
 ├── README.md             # This documentation
+├── CONTRIBUTING.md       # Contribution guidelines
+├── CHANGELOG.md          # Version history
 └── LICENSE               # MIT License
 ```
 
@@ -204,8 +221,14 @@ python3 pdf2md_cli.py document.pdf
 # Check if installed
 which tesseract
 
-# Install on Ubuntu/Debian
+# Run installation helper
+./install_tesseract.sh
+
+# Or install manually on Ubuntu/Debian
 sudo apt install tesseract-ocr
+
+# Verify installation
+tesseract --version
 ```
 
 **Module import errors:**
