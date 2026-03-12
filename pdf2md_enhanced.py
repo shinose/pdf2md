@@ -8,6 +8,35 @@ from PIL import Image, ImageEnhance, ImageFilter
 import io
 import shutil
 import base64
+import os
+import sys
+
+def check_display_available():
+    """Check if GUI display is available"""
+    # Check for display environment variable
+    if not os.environ.get('DISPLAY'):
+        return False
+    
+    # Try to import and test tkinter
+    try:
+        test_tk = tk.Tk()
+        test_tk.destroy()
+        return True
+    except:
+        return False
+
+def run_cli_fallback():
+    """Fallback to CLI when GUI is not available"""
+    print("🖥️  GUI not available - falling back to CLI mode")
+    print("Use the enhanced CLI version instead:")
+    print("python3 pdf2md_cli_enhanced.py <pdf_file> [options]")
+    print("")
+    print("Examples:")
+    print("  python3 pdf2md_cli_enhanced.py document.pdf")
+    print("  python3 pdf2md_cli_enhanced.py document.pdf -o output.md")
+    print("  python3 pdf2md_cli_enhanced.py --help")
+    print("")
+    print("For GUI mode, ensure you're running in a desktop environment with X11 display.")
 
 class EnhancedPDF2MarkdownConverter(ctk.CTk):
     def __init__(self):
@@ -259,5 +288,11 @@ class EnhancedPDF2MarkdownConverter(ctk.CTk):
                 messagebox.showerror("Error", f"An error occurred while saving: {e}")
 
 if __name__ == "__main__":
+    # Check if GUI display is available
+    if not check_display_available():
+        run_cli_fallback()
+        sys.exit(1)
+    
+    # Run GUI if display is available
     app = EnhancedPDF2MarkdownConverter()
     app.mainloop()
